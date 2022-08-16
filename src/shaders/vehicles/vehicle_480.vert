@@ -3,6 +3,7 @@ precision mediump float;
 layout(std140) uniform;
 
 layout(location=0) in vec3 a_position;
+layout(location=1) in int a_index;
 
 uniform Stuff {
     mat4 view_mat;
