@@ -43,12 +43,6 @@ pub fn draw
     gl.vertex_attrib_pointer_with_i32(0 as u32, 3, GL::FLOAT, false, 0, 0);
     gl.enable_vertex_attrib_array(0 as u32);
 
-
-
-
-    // let x_rot = cgmath::Matrix4::from_angle_x(cgmath::Rad(0.75 * (PI / 2.0)));
-    // let y_rot = cgmath::Matrix4::from_angle_y(cgmath::Rad(0.0 * (PI / 2.0)));
-
     let x_rot = cgmath::Matrix4::from_angle_x(state.lock().unwrap().x_rot);
     let y_rot = cgmath::Matrix4::from_angle_y(state.lock().unwrap().y_rot);
     let z_rot = cgmath::Matrix4::from_angle_z(state.lock().unwrap().z_rot);
@@ -69,10 +63,6 @@ pub fn draw
             kdx = kdx + 1;
         }
     }
-
-
-
-
 
     gl.bind_buffer_base(GL::UNIFORM_BUFFER, 0, Some(&draw_stuff.stuff_uniform_buffer.as_ref()));
     let arr_js = js_sys::Float32Array::from(arr.as_slice());
@@ -160,44 +150,6 @@ pub fn prepare_draw
 
     let stuff_uniform_buffer = Arc::new(gl.create_buffer().unwrap());
     
-    let eye: cgmath::Point3<f32> = cgmath::Point3::new(0.0, 0.0, 1.0);
-    let center: cgmath::Point3<f32> = cgmath::Point3::new(0.0, 0.0, -1.0);
-    let dir: cgmath::Vector3<f32> = cgmath::Vector3::new(0.0, 0.0, 0.0);
-    let up: cgmath::Vector3<f32> = cgmath::Vector3::new(0.0, 0.0, 1.0);
-    
-    let x_rot = cgmath::Matrix4::from_angle_x(cgmath::Rad(0.75 * (PI / 2.0)));
-    let y_rot = cgmath::Matrix4::from_angle_y(cgmath::Rad(0.0 * (PI / 2.0)));
-    let z_rot = cgmath::Matrix4::from_angle_z(cgmath::Rad(0.0 * (PI / 2.0)));
-
-    let scale = cgmath::Matrix4::from_scale(5.0);
-
-    let all_rot = x_rot * y_rot * z_rot * scale;
-
-    let view_mat = Arc::new(all_rot);
-
-    // let view_mat: Arc<cgmath::Matrix4<f32>> = Arc::new(cgmath::Matrix4::from_angle_y(cgmath::Rad(0.0 * (PI / 2.0))));
-
-    // let mut kdx: usize = 0;
-    // for idx in 0..4 {
-    //     for jdx in 0..4 {
-    //         // arr[kdx] = view_mat[idx][jdx];
-    //         // arr[kdx] = -0.3;
-    //         log!("idx:", idx, "jdx", jdx);
-    //         log!("view_mat: ", view_mat[idx][jdx]);
-    //     }
-    // }
-
-
-    let mut arr: [f32; 20] = [0.0; 20];
-
-    let mut kdx: usize = 0;
-    for idx in 0..4 {
-        for jdx in 0..4 {
-            arr[kdx] = view_mat[idx][jdx];
-            // log!("view_mat: ", view_mat[idx][jdx]);
-            kdx = kdx + 1;
-        }
-    }
 
     Ok(
         Arc::new(
@@ -207,8 +159,8 @@ pub fn prepare_draw
                 js_vertices,
                 vertices_position,
                 stuff_uniform_buffer,
-                view_mat,
-                arr,
+                // view_mat,
+                // arr,
             }
         )
     )
@@ -221,7 +173,7 @@ pub struct DrawStuff {
     pub js_vertices: Arc<js_sys::Float32Array>,
     pub vertices_position: Arc<i32>,
     pub stuff_uniform_buffer: Arc<WebGlBuffer>,
-    pub view_mat: Arc<cgmath::Matrix4<f32>>,
-    pub arr: [f32; 20],
+    // pub view_mat: Arc<cgmath::Matrix4<f32>>,
+    // pub arr: [f32; 20],
 
 }

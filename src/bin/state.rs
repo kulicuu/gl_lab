@@ -1,4 +1,3 @@
-
 #![allow(unused)]
 
 use crate::utils;
@@ -37,7 +36,7 @@ pub fn set_events
     let document = web_sys::window().unwrap().document().unwrap();
     let et_keys : EventTarget = document.into();
     let keypress_cb = Closure::wrap(Box::new(move |event: KeyboardEvent| {
-        log!("key code", event.key_code());
+        // log!("key code", event.key_code());
         match event.key_code() {
             39 => state.lock().unwrap().y_rot -= Rad(0.1),
             38 => state.lock().unwrap().x_rot += Rad(0.1),
@@ -54,8 +53,6 @@ pub fn set_events
     keypress_cb.forget();
 
 }
-
-
 
 pub struct State {
     pub x_rot: cgmath::Rad<f32>,
