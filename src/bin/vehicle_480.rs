@@ -66,7 +66,7 @@ pub fn draw
 
 
 
-    let eye = cgmath::Point3::new(0.5, 0.5, 0.5);
+    let eye = cgmath::Point3::new(0.1, 0.1, 0.1);
     let center = cgmath::Point3::new(0.0, 0.0, 0.0);
     let up = cgmath::Vector3::new(0.0, 0.0, 1.0);
 
@@ -84,6 +84,22 @@ pub fn draw
     for idx in 0..4 {
         for jdx in 0..4 {
             arr[kdx] = pivot[idx][jdx];
+            kdx = kdx + 1;
+        }
+    }
+
+    let rot_angle_x = cgmath::Matrix4::from_angle_x(cgmath::Rad(PI));
+    let translation = cgmath::Matrix4::from_translation(cgmath::Vector3::new(-0.1, -0.0, -0.0));
+    let pivot3 = cgmath::Matrix4::from_scale(3.0);
+
+
+    let pivot4 = translation;
+
+
+
+    for idx in 0..4 {
+        for jdx in 0..4 {
+            arr[kdx] = pivot4[idx][jdx];
             kdx = kdx + 1;
         }
     }
