@@ -64,7 +64,13 @@ pub fn draw
     let all_rot = x_rot * y_rot * z_rot * scale;
     let view_mat = Arc::new(all_rot);
 
-    let pivot = cgmath::Matrix4::from_scale(3.0);
+
+
+    let eye = cgmath::Point3::new(0.5, 0.5, 0.5);
+    let center = cgmath::Point3::new(0.0, 0.0, 0.0);
+    let up = cgmath::Vector3::new(0.0, 0.0, 1.0);
+
+    let pivot = cgmath::Matrix4::look_at_rh(eye, center, up);
 
     let mut arr: [f32; 200] = [0.0; 200];
     let mut kdx: usize = 0;

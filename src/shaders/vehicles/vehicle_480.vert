@@ -7,7 +7,7 @@ layout(location=1) in vec3 a_normal;
 
 uniform Stuff {
     mat4 view_mat; // not actually such atm.
-    mat4 next_mat;
+    mat4 next_mat; // This is a view transform atm.
 };
 
 out highp vec3 diffuse_light;
