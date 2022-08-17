@@ -73,6 +73,10 @@ fn main()
         let frame_delta = now - cursor;
         cursor = now;
 
+        gl.clear_depth(1.0); // Clear everything
+        gl.enable(GL::DEPTH_TEST); // Enable depth testing
+        gl.depth_func(GL::LEQUAL);
+
         gl.clear(GL::COLOR_BUFFER_BIT);
 
         vehicle_480::draw(
