@@ -64,12 +64,20 @@ pub fn draw
     let all_rot = x_rot * y_rot * z_rot * scale;
     let view_mat = Arc::new(all_rot);
 
-    let mut arr: [f32; 20] = [0.0; 20];
+    let pivot = cgmath::Matrix4::from_scale(3.0);
+
+    let mut arr: [f32; 200] = [0.0; 200];
     let mut kdx: usize = 0;
     for idx in 0..4 {
         for jdx in 0..4 {
             arr[kdx] = view_mat[idx][jdx];
             // log!("view_mat: ", view_mat[idx][jdx]);
+            kdx = kdx + 1;
+        }
+    }
+    for idx in 0..4 {
+        for jdx in 0..4 {
+            arr[kdx] = pivot[idx][jdx];
             kdx = kdx + 1;
         }
     }

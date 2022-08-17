@@ -6,17 +6,21 @@ layout(location=0) in vec3 a_position;
 layout(location=1) in vec3 a_normal;
 
 uniform Stuff {
-    mat4 view_mat;
+    mat4 view_mat; // not actually such atm.
+    mat4 next_mat;
 };
 
 out highp vec3 diffuse_light;
 
 void main() {
     // a_normal;
+    
     vec4 viewed_pos = view_mat * vec4(a_position, 1.0);
+    vec4 nexted_pos = next_mat * viewed_pos;
     vec4 viewed_norm = view_mat * vec4(a_normal, 1.0); // maybe the homogeneous coordinate
     // should be 0.0?
-    gl_Position = viewed_pos;
+    // gl_Position = viewed_pos;
+    gl_Position = nexted_pos;
 
 
 
