@@ -21,15 +21,6 @@ use std::f32::consts::PI;
 use crate::utils::time_polyfill::Instant;
 use crate::state;
 
-const AMORTIZATION: f32 = 0.95;
-const LOCALIZED_SCALE : f32 = 0.001;
-const CORRECTION : f32 = LOCALIZED_SCALE / 2.0;
-const RESOLUTION : f32 = 8.0;
-const SCALE : f32 = 0.08;
-const HALF : f32 = SCALE / 2.0;
-const STEP : f32 = SCALE / RESOLUTION;
-const NUM_PARTICLES : u32 = 9680;
-
 pub fn draw
 (
     gl: Arc<GL>,
@@ -37,6 +28,7 @@ pub fn draw
     state: Arc<Mutex<state::State>>,
 )
 {
+    gl.link_program(&draw_stuff.shader_program);
     gl.use_program(Some(&draw_stuff.shader_program));
 
     gl.bind_buffer(GL::ARRAY_BUFFER, Some(&draw_stuff.indexed_vertex_buffer));
@@ -69,12 +61,8 @@ pub fn draw
     let y_rot = Matrix4::from_angle_y(state.lock().unwrap().model_rot[1]);
     let z_rot = Matrix4::from_angle_z(state.lock().unwrap().model_rot[2]);
 
-
-
-
     let all_rot = x_rot * y_rot * z_rot * scale_down;
     
-
     let mtx = state.lock().unwrap().model_trans[0];
     let mty = state.lock().unwrap().model_trans[1];
     let mtz = state.lock().unwrap().model_trans[2];

@@ -52,7 +52,7 @@ fn main()
 
     let vehicle_draw_stuff = vehicle_480::prepare_draw(gl.clone()).unwrap();
     
-
+    let terrain_draw_stuff = terrain::prepare_draw(gl.clone()).unwrap();
 
 
 
@@ -66,10 +66,8 @@ fn main()
         model_trans: Vector4::new(0.0, 0.0, 0.0, 1.0),
 
 
-        // camera choose front to be in the positive x-axis direction
-        // so any rotation offsets from x-unit vector, normalized becoming the `look_at` or `center` point for the transform matrix.
         camera_rot: Vector4::new(Rad(0.0), Rad(0.0), Rad(0.0), Rad(0.0)),
-        camera_trans: Vector4::new(-0.9, 0.0, 0.0, 1.0),
+        camera_trans: Vector4::new(0.0, 0.0, 0.5, 1.0),
 
     }));
 
@@ -98,6 +96,12 @@ fn main()
         vehicle_480::draw(
             gl.clone(),
             vehicle_draw_stuff.clone(),
+            state.clone(),
+        );
+
+        terrain::draw(
+            gl.clone(),
+            terrain_draw_stuff.clone(),
             state.clone(),
         );
 
