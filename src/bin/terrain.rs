@@ -21,15 +21,6 @@ use std::f32::consts::PI;
 use crate::utils::time_polyfill::Instant;
 use crate::state;
 
-const AMORTIZATION: f32 = 0.95;
-const LOCALIZED_SCALE : f32 = 0.001;
-const CORRECTION : f32 = LOCALIZED_SCALE / 2.0;
-const RESOLUTION : f32 = 8.0;
-const SCALE : f32 = 0.08;
-const HALF : f32 = SCALE / 2.0;
-const STEP : f32 = SCALE / RESOLUTION;
-const NUM_PARTICLES : u32 = 9680;
-
 pub fn draw
 (
     gl: Arc<GL>,
@@ -106,8 +97,8 @@ pub fn prepare_draw
             let x_dev = js_sys::Math::random() as f32;
             let y_dev = js_sys::Math::random() as f32;
             let z_dev = js_sys::Math::random() as f32;
-            let x = start_point + ((idx as f32) * s1) + (x_dev * 0.001);
-            let y = start_point + ((jdx as f32) * s1) + (y_dev * 0.001);
+            let x = start_point + ((idx as f32) * s1) + (x_dev * 0.01);
+            let y = start_point + ((jdx as f32) * s1) + (y_dev * 0.01);
             let z = (z_dev * 0.01) as f32;
             vertices.extend_from_slice(&[x, y, z]);
         }

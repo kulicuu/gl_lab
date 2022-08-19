@@ -4,6 +4,7 @@ mod utils;
 mod vehicle_480;
 mod state;
 mod terrain;
+mod grid;
 
 use web_sys::{
     HtmlCanvasElement, WebGl2RenderingContext as GL, 
@@ -27,15 +28,6 @@ use std::f32::consts::PI;
 
 use crate::utils::time_polyfill::Instant;
 
-const AMORTIZATION: f32 = 0.95;
-const LOCALIZED_SCALE : f32 = 0.001;
-const CORRECTION : f32 = LOCALIZED_SCALE / 2.0;
-const RESOLUTION : f32 = 8.0;
-const SCALE : f32 = 0.08;
-const HALF : f32 = SCALE / 2.0;
-const STEP : f32 = SCALE / RESOLUTION;
-const NUM_PARTICLES : u32 = 9680;
-
 fn main()
 {
     let document = web_sys::window().unwrap().document().unwrap();
@@ -54,7 +46,7 @@ fn main()
     
     let terrain_draw_stuff = terrain::prepare_draw(gl.clone()).unwrap();
 
-
+    let grid_draw_stuff = grid::prepare_draw(gl.clone()).unwrap();
 
 
     let state = Arc::new(Mutex::new(state::State {
@@ -63,7 +55,7 @@ fn main()
 
         // model choose spear front to be in the positive x axis to start
         model_rot: Vector4::new(Rad(0.0), Rad(0.0), Rad(0.0), Rad(0.0)),
-        model_trans: Vector4::new(0.0, 0.0, 0.0, 1.0),
+        model_trans: Vector4::new(0.0, 0.0, -0.2, 1.0),
 
 
         camera_rot: Vector4::new(Rad(0.0), Rad(0.0), Rad(0.0), Rad(0.0)),
@@ -92,6 +84,12 @@ fn main()
         gl.depth_func(GL::LEQUAL);
 
         gl.clear(GL::COLOR_BUFFER_BIT);
+
+        grid::draw(
+            gl.clone(),
+            grid_draw_stuff.clone(),
+            state.clone(),
+        );
 
         vehicle_480::draw(
             gl.clone(),
