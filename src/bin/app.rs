@@ -3,6 +3,7 @@
 mod utils;
 mod vehicle_480;
 mod state;
+mod terrain;
 
 use web_sys::{
     HtmlCanvasElement, WebGl2RenderingContext as GL, 
@@ -49,7 +50,7 @@ fn main()
         .unwrap();
     let gl : Arc<GL> = Arc::new(gl);
 
-    let draw_stuff = vehicle_480::prepare_draw(gl.clone()).unwrap();
+    let vehicle_draw_stuff = vehicle_480::prepare_draw(gl.clone()).unwrap();
     
 
 
@@ -96,7 +97,7 @@ fn main()
 
         vehicle_480::draw(
             gl.clone(),
-            draw_stuff.clone(),
+            vehicle_draw_stuff.clone(),
             state.clone(),
         );
 

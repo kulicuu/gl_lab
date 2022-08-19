@@ -320,5 +320,4 @@ pub struct DrawStuff {
     pub normals_buffer: Arc<WebGlBuffer>,
     // pub normals_position: Arc<i32>,  
     pub js_normals: Arc<js_sys::Float32Array>,
-
 }
