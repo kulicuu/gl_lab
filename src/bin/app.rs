@@ -15,7 +15,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use std::sync::{Arc, Mutex};
 use cgmath::prelude::*;
-use cgmath::Rad;
+use cgmath::{Rad, Vector3, Vector4, Point3, Matrix4};
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::convert::{TryInto};
@@ -51,10 +51,25 @@ fn main()
 
     let draw_stuff = vehicle_480::prepare_draw(gl.clone()).unwrap();
     
+
+
+
+
+
     let state = Arc::new(Mutex::new(state::State {
-        x_rot: cgmath::Rad(0.0),
-        y_rot: cgmath::Rad(0.0),
-        z_rot: cgmath::Rad(0.0),
+
+        model_scale: 2.0,
+
+        // model choose spear front to be in the positive x axis to start
+        model_rot: Vector4::new(Rad(0.0), Rad(0.0), Rad(0.0), Rad(0.0)),
+        model_trans: Vector4::new(0.0, 0.0, 0.0, 1.0),
+
+
+        // camera choose front to be in the positive x-axis direction
+        // so any rotation offsets from x-unit vector, normalized becoming the `look_at` or `center` point for the transform matrix.
+        camera_rot: Vector4::new(Rad(0.0), Rad(0.0), Rad(0.0), Rad(0.0)),
+        camera_trans: Vector4::new(-0.9, 0.0, 0.0, 1.0),
+
     }));
 
     state::set_events(state.clone());

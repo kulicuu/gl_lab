@@ -9,7 +9,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use std::sync::{Arc, Mutex};
 use cgmath::prelude::*;
-use cgmath::Rad;
+use cgmath::{Rad, Point3, Vector3, Vector4, Matrix4};
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::convert::{TryInto};
@@ -55,54 +55,92 @@ pub fn draw
 
 
 
-    // gl.bind_buffer(GL::)
-
-    let x_rot = cgmath::Matrix4::from_angle_x(state.lock().unwrap().x_rot);
-    let y_rot = cgmath::Matrix4::from_angle_y(state.lock().unwrap().y_rot);
-    let z_rot = cgmath::Matrix4::from_angle_z(state.lock().unwrap().z_rot);
-    let scale = cgmath::Matrix4::from_scale(5.0);
-    let all_rot = x_rot * y_rot * z_rot * scale;
-    let view_mat = Arc::new(all_rot);
+    // Transforms to apply, moving model space to screen space:
+    // 1. Scale down.
+    // 2. Model transform to world space, rotate, then translate.
+    // 3. view translation with camera look at.
+    // 4. projection matrix?
 
 
+    let scale_down = Matrix4::from_scale(state.lock().unwrap().model_scale);
 
-    let eye = cgmath::Point3::new(0.1, 0.1, 0.1);
-    let center = cgmath::Point3::new(0.0, 0.0, 0.0);
-    let up = cgmath::Vector3::new(0.0, 0.0, 1.0);
 
-    let pivot = cgmath::Matrix4::look_at_rh(eye, center, up);
+    let x_rot = Matrix4::from_angle_x(state.lock().unwrap().model_rot[0]);
+    let y_rot = Matrix4::from_angle_y(state.lock().unwrap().model_rot[1]);
+    let z_rot = Matrix4::from_angle_z(state.lock().unwrap().model_rot[2]);
 
-    let mut arr: [f32; 200] = [0.0; 200];
+
+
+
+    let all_rot = x_rot * y_rot * z_rot * scale_down;
+    
+
+    let mtx = state.lock().unwrap().model_trans[0];
+    let mty = state.lock().unwrap().model_trans[1];
+    let mtz = state.lock().unwrap().model_trans[2];
+
+    let translate = cgmath::Matrix4::from_translation(cgmath::Vector3::new(mtx, mty, mtz));
+    
+
+    let m350 = translate * all_rot;
+
+    // This is the model matrix ^ : scaled, rotated, and translated from model to world space.
+
+
+    // Treat the camera as a vehicle
+    // It will be controlled by 3-axis for rotations and a thrust axis with positive and negative inputs.
+
+
+    // Treat the camera as a vehicle, or as if a vehicle was 
+    // there and vehicle has same attributes for location
+    // in world_space model mat, 
+    // one vector of rotation in three axes
+    // one vector of displacement in three axes
+    // on scale on the model space to get correct dimensions in world
+    // space.
+
+    // let eye = Point3::new(-0.9, 0.0, 0.0);
+
+    let start_center = Vector4::new(-0.1, 0.0, 0.0, 1.0);
+    let start_up = Vector4::new(0.0, 0.0, 1.0, 1.0);
+    let rx = Matrix4::from_angle_x(state.lock().unwrap().camera_rot[0]);
+    let ry = Matrix4::from_angle_y(state.lock().unwrap().camera_rot[1]);
+    let rz = Matrix4::from_angle_z(state.lock().unwrap().camera_rot[2]);
+    let rots = rx * ry * rz;
+
+    let eye = state.lock().unwrap().camera_trans;
+    let center = rots * start_center;
+    let up = rots * start_up; 
+
+    let view_matrix = Matrix4::look_at_rh(Point3::from_vec(eye.truncate()), Point3::from_vec(center.truncate()), up.truncate()); // to camera space
+
+    let mut arr: [f32; 300] = [0.0; 300];
     let mut kdx: usize = 0;
     for idx in 0..4 {
         for jdx in 0..4 {
-            arr[kdx] = view_mat[idx][jdx];
+            arr[kdx] = m350[idx][jdx];
             // log!("view_mat: ", view_mat[idx][jdx]);
             kdx = kdx + 1;
         }
     }
     for idx in 0..4 {
         for jdx in 0..4 {
-            arr[kdx] = pivot[idx][jdx];
+            arr[kdx] = view_matrix[idx][jdx];
             kdx = kdx + 1;
         }
     }
 
-    let rot_angle_x = cgmath::Matrix4::from_angle_x(cgmath::Rad(PI));
-    let translation = cgmath::Matrix4::from_translation(cgmath::Vector3::new(-0.1, -0.0, -0.0));
-    let pivot3 = cgmath::Matrix4::from_scale(3.0);
 
 
-    let pivot4 = translation;
+    // The next really lab thing to do is add in event handlers for other things
+    // like camera position and 
 
-
-
-    for idx in 0..4 {
-        for jdx in 0..4 {
-            arr[kdx] = pivot4[idx][jdx];
-            kdx = kdx + 1;
-        }
-    }
+    // for idx in 0..4 {
+    //     for jdx in 0..4 {
+    //         arr[kdx] = proj_mat[idx][jdx];
+    //         kdx = kdx + 1;
+    //     }
+    // }
 
     gl.bind_buffer_base(GL::UNIFORM_BUFFER, 0, Some(&draw_stuff.stuff_uniform_buffer.as_ref()));
     let arr_js = js_sys::Float32Array::from(arr.as_slice());
