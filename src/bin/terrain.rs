@@ -84,7 +84,7 @@ pub fn prepare_draw
 {
     let mut vertices = vec![];
 
-    let resolution = 40;
+    let resolution = 102;
     let terrain_size = 1.2;
     let start_point = -0.6;
     let end_point = 0.6;

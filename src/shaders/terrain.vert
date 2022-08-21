@@ -11,12 +11,18 @@ uniform Stuff {
     // mat4 proj_mat;
 };
 
-out highp vec3 diffuse_light;
+// out highp vec3 diffuse_light;
+
+flat out int instance_id;
 
 void main() {
 
-
+    // instance_id = gl_InstanceID;
+    instance_id = gl_VertexID;
+    // gl_VertexID;
     // a_position is already in world space the way it's set up
+
+    // instance_id = gl_InstanceId;
 
     vec4 camera_space = view_mat * vec4(a_position, 1.0);
 
