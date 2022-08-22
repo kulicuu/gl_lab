@@ -17,12 +17,12 @@ void main() {
 
 
     float x1 = float(instance_id % 4);
-    float x2 = float((instance_id + 2) % 4);
+    float x2 = float((instance_id + 1) % 4);
 
     FragColor = vec4(
-        x1 / 3.0,
+        (x1 / 3.0) * 0.7,
         0.0,
-        x2 / 3.0,
+        (x2 / 3.0) * 0.7,
         0.8
     );
 }
